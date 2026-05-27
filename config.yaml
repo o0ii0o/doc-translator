@@ -1,0 +1,37 @@
+# LLM 配置（翻译用，与 MinerU 无关）
+llm:
+  provider: openai
+  api_key: ${DEEPSEEK_API_KEY}   # 从环境变量读取，勿写明文
+  model: deepseek-v4-flash          # DeepSeek 官方模型名
+  base_url: https://api.deepseek.com
+
+# MinerU 配置（PDF 解析用）
+mineru:
+  api_token: ${MINERU_API_KEY}   # 从环境变量读取，勿写明文
+  base_url: https://mineru.net/api/v4
+  model: vlm
+  output_format: markdown
+  poll_interval: 5              # 轮询间隔（秒）
+  max_poll_attempts: 600        # 最大轮询次数
+  connect_timeout: 10           # 连接超时（秒）
+  read_timeout: 120             # 读取超时（秒）
+
+# 解析缓存（同一 PDF 复用 MinerU 结果，跳过重复解析）
+cache:
+  enabled: true
+  dir: .cache/parse
+
+# 翻译配置
+translation:
+  batch_size: 4000          # 每批处理的字符数
+  max_concurrency: 3        # 多段翻译时的最大并发线程数
+  source_lang: English
+  target_lang: Chinese
+
+# 日志配置
+logging:
+  level: INFO               # DEBUG / INFO / WARNING / ERROR
+  console: true             # 是否输出到终端
+  file: logs/doc-translator.log  # 日志文件路径，设为 null 则仅控制台
+  max_bytes: 5242880        # 单文件最大 5MB
+  backup_count: 3           # 保留历史文件数量

@@ -1,0 +1,13 @@
+# 文档翻译系统依赖
+
+# 基础
+python >= 3.9
+
+# MinerU (PDF解析)
+mineru
+
+# LLM 调用
+openai
+
+# 配置/工具
+pyyaml
