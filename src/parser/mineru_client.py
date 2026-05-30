@@ -1,26 +1,27 @@
+"""MinerU 云端 API 客户端"""
+
+import io
 import time
 import zipfile
-import io
 from pathlib import Path
 
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from .logger import get_logger
+from src.infra.logging import get_logger
 
 logger = get_logger("mineru")
 
-DEFAULT_TIMEOUT = (10, 120)  # (连接超时, 读取超时) 秒
+DEFAULT_TIMEOUT = (10, 120)
 DEFAULT_POLL_INTERVAL = 5
-DEFAULT_MAX_POLL_ATTEMPTS = 600  # 约 50 分钟
+DEFAULT_MAX_POLL_ATTEMPTS = 600
 
 
 def _create_session(
     retries: int = 5,
     backoff_factor: float = 2.0,
 ) -> requests.Session:
-    """创建带自动重试的 HTTP Session"""
     retry = Retry(
         total=retries,
         connect=retries,
@@ -44,7 +45,6 @@ def _request(
     timeout: tuple[int, int] = DEFAULT_TIMEOUT,
     **kwargs,
 ) -> requests.Response:
-    """发起请求，网络层失败时记录日志后抛出"""
     try:
         return session.request(method, url, timeout=timeout, **kwargs)
     except requests.exceptions.ConnectionError as e:
@@ -114,7 +114,10 @@ def parse_local_pdf(
             )
             poll.raise_for_status()
             consecutive_errors = 0
-        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+        except (
+            requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout,
+        ) as e:
             consecutive_errors += 1
             logger.warning(
                 "轮询失败 (%d/%d)，%ds 后重试: %s",

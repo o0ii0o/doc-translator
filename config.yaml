@@ -28,6 +28,47 @@ translation:
   source_lang: English
   target_lang: Chinese
 
+# 知识库索引（RAG ingest / embedding）
+index:
+  db_path: data/doc_translator.db
+  vector_dir: data/vector
+  collection_name: doc_translator
+  parsed_dir: data/parsed
+  strategy: hierarchical
+  section_heading_levels: [1, 2]
+  leaf_target_size: 700
+  leaf_overlap: 100
+  min_leaf_size: 80
+  embed_levels: [leaf]
+  prefix_heading_in_leaf: true
+
+  embedding:
+    # provider: openai | bge_m3（本地多语言，推荐论文 RAG）
+    provider: bge_m3
+    model: BAAI/bge-m3
+    use_fp16: true              # 8GB 显存建议 true；OOM 时改为 false 或减小 batch_size
+    device: null                # null=自动；可填 cuda / cpu
+    batch_size: 6               # 8GB 显存建议 4~6；仍 OOM 再降到 2
+    max_concurrency: 1          # 本地模型无需 API 并发
+
+    # --- 若改用 OpenAI 兼容 API，取消下面注释并改 provider: openai ---
+    # provider: openai
+    # api_key: ${OPENAI_API_KEY}
+    # model: text-embedding-3-small
+    # base_url: https://api.openai.com/v1
+    # batch_size: 32
+    # max_concurrency: 3
+
+# RAG 问答（单文档，默认中文回答）
+query:
+  top_k: 6
+  max_distance: null          # 可选，过滤过远的 chunk；null 表示不过滤
+  max_context_chars: 8000
+  use_parent_context: true      # 命中 leaf 时附带父 section 上下文
+  include_sources: true
+  answer_lang: zh               # 默认中文回答
+  temperature: 0.3
+
 # 日志配置
 logging:
   level: INFO               # DEBUG / INFO / WARNING / ERROR

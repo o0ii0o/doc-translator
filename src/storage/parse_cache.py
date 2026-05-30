@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-from .logger import get_logger
+from src.infra.logging import get_logger
 
 logger = get_logger("cache")
 
@@ -44,7 +44,9 @@ class ParseCache:
     def compute_hash(self, pdf_path: Path) -> str:
         return self._file_hash(Path(pdf_path))
 
-    def get(self, pdf_path: Path, model: str, file_hash: Optional[str] = None) -> Optional[str]:
+    def get(
+        self, pdf_path: Path, model: str, file_hash: Optional[str] = None
+    ) -> Optional[str]:
         """命中缓存则返回 Markdown，否则返回 None"""
         if not self.enabled:
             return None

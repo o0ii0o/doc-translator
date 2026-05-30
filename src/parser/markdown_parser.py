@@ -1,13 +1,13 @@
-"""Markdown 读取器 - 直接读取 Markdown 文件内容"""
+"""Markdown 文件读取"""
 
 from pathlib import Path
 
-from .logger import get_logger
+from src.infra.logging import get_logger
 
-logger = get_logger("md_reader")
+logger = get_logger("markdown_parser")
 
 
-class MarkdownReader:
+class MarkdownParser:
     """读取 Markdown 文件并保留格式"""
 
     def read(self, md_path: Path) -> str:

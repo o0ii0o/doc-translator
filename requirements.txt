@@ -11,3 +11,9 @@ openai
 
 # 配置/工具
 pyyaml
+requests
+
+# RAG 知识库
+chromadb
+langdetect
+FlagEmbedding              # 本地 BGE-M3（index.embedding.provider: bge_m3）

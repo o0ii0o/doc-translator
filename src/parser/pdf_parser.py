@@ -3,10 +3,10 @@
 from pathlib import Path
 from typing import Optional
 
-from .config_loader import get_mineru_token, load_config
-from .logger import get_logger
-from .minerU_api_parse import parse_local_pdf
-from .parse_cache import ParseCache
+from src.infra.config import get_mineru_token, load_config
+from src.infra.logging import get_logger
+from src.parser.mineru_client import parse_local_pdf
+from src.storage.parse_cache import ParseCache
 
 logger = get_logger("pdf_parser")
 
@@ -55,7 +55,9 @@ class PDFParser:
             file_hash = self.cache.compute_hash(pdf_path)
 
         if self.use_cache and not force:
-            cached = self.cache.get(pdf_path, self.mineru_model, file_hash=file_hash)
+            cached = self.cache.get(
+                pdf_path, self.mineru_model, file_hash=file_hash
+            )
             if cached is not None:
                 return cached
 

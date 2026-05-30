@@ -63,3 +63,22 @@ def get_mineru_token(mineru_config: dict) -> str:
         "未设置 MinerU API Token。请在 PowerShell 中执行：\n"
         '  $env:MINERU_API_KEY = "你的Token"'
     )
+
+
+def get_embedding_api_key(embedding_config: dict) -> str:
+    """获取 Embedding API Key，优先级：环境变量 > config 中的值（支持 ${VAR}）"""
+    for env_name in ("OPENAI_API_KEY", "EMBEDDING_API_KEY"):
+        if os.environ.get(env_name):
+            return os.environ[env_name]
+
+    api_key = embedding_config.get("api_key", "")
+    if api_key:
+        api_key = resolve_env_value(str(api_key))
+
+    if api_key and not api_key.startswith("${"):
+        return api_key
+
+    raise ValueError(
+        "未设置有效的 Embedding API Key。请在 PowerShell 中执行：\n"
+        '  $env:OPENAI_API_KEY = "sk-xxx"'
+    )
